@@ -26,7 +26,12 @@ class BaseImage():
 
     def _prepare_text(self, text: str) -> str:
         correctly_spaced_chars = []        
-        for char in text:
+
+	img_formats = [".jpg", ".gif"]
+        if text[-4:] in img_formats:
+		text = text[:-4]
+
+	for char in text:
             if char == "_":
                 correctly_spaced_chars.append("\n")
             elif char == "-":
