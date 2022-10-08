@@ -1,23 +1,29 @@
+"""Use - (dash) for space and _ (underline) for line break"""
+import logging
+
 from starlite import get, Starlite
 from starlite.datastructures import Stream
-from PIL.Image import Image as ImageType
 
-from .img import create_stream, add_text, load_image
+from img import GIF, StaticImage
 
-STATIC_PIC_URL = "https://api.thecatapi.com/v1/images/search?mime_types=jpg,png&format=src"
-GIF_URL = "https://api.thecatapi.com/v1/images/search?mime_types=gif&format=src"
+logging.basicConfig(level="ERROR")
+logger = logging.getLogger()
+consoleHandler = logging.StreamHandler()
+logger.addHandler(consoleHandler)
 
 
-@get(path="/kot/{text:str}", media_type="image/gif")
+@get(["/кот/гиф/{text:str}", "/kot/gif/{text:str}"], media_type="image/gif")
+async def get_gif(text: str) -> Stream:
+    img = GIF(text)
+    return Stream(iterator=img.create_stream())
+
+
+@get(["/кот/{text:str}", "/kot/{text:str}"], media_type="image")
 async def get_img(text: str) -> Stream:
-    if text == "гиф":
-        img: ImageType = add_text(load_image(GIF_URL), '')
-    else:
-        img: ImageType = load_image(STATIC_PIC_URL)
-    stream = create_stream(img)
-    return Stream(iterator=stream)
+    img = StaticImage(text)
+    return Stream(iterator=img.create_stream())
 
 
-app = Starlite(route_handlers=[get_img])
+app = Starlite(route_handlers=[get_img, get_gif])
 
-# TODO санитизация инпута, тесты, гиф
+# TODO санитация инпута, тесты, облагородить обработку пробелов
