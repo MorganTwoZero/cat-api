@@ -25,19 +25,19 @@ class BaseImage():
         return orig_img.content
 
     def _prepare_text(self, text: str) -> str:
-        correctly_spaced_chars = []        
+        correctly_spaced_chars = []    
 
-	img_formats = [".jpg", ".gif"]
+        img_formats = [".jpg", ".gif"]
         if text[-4:] in img_formats:
-		text = text[:-4]
+            text = text[:-4]
 
-	for char in text:
-            if char == "_":
-                correctly_spaced_chars.append("\n")
-            elif char == "-":
-                correctly_spaced_chars.append(" ")
-            else:
-                correctly_spaced_chars.append(char)
+        for char in text:
+                if char == "_":
+                    correctly_spaced_chars.append("\n")
+                elif char == "-":
+                    correctly_spaced_chars.append(" ")
+                else:
+                    correctly_spaced_chars.append(char)
         return "".join([c for c in correctly_spaced_chars]).upper()
 
 
